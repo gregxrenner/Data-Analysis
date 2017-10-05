@@ -40,3 +40,17 @@ qunif(0.25,0,10) # calcuate x for the 25th quantile
                         panel.abline(v=seq(0,stop,by=5),col='gray60')
                         panel.stripchart(x,y,...)
                       })
+
+# Ex: 3.6.1 Build a qq-plot for data we assume is normally distributed
+  x <- c(-0.16, 1.17, -0.43, -0.02, 1.06, -1.35, 0.65, -1.12, 0.03, -1.44)
+  # sort the data
+  x.sorted <- sort(x)
+  q <- seq(0.05, 0.95, by=0.1)
+  y <- qnorm(q)
+  require(lattice) # xyplot is in lattice
+  qqplot <- xyplot(x.sorted~y)
+  ppoints(10)
+  myplot <- qqmath(x) # graph the qq plot
+  require(fastR) # xqqmath is in fastR
+  myplot <- xqqmath(~x,fitline=TRUE)
+  
