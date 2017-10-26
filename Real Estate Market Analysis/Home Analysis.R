@@ -8,15 +8,18 @@
 # and 'ZRI Summary: Multifamily, SFR, Condo/Co-op (Current Month)'.
 
 #load home rents
-rentPath <- '/home/greg/Documents/Projects/Data-Analysis/Real Estate Market Analysis/Zip_Zri_AllHomesPlusMultifamily_Summary.csv'
+rentPath <- "C:/Users/Gregory.Renner/Documents/Personal/Programs/Data-Analysis/Real Estate Market Analysis/Zip_Zri_AllHomesPlusMultifamily_Summary.csv"
+#rentPath <- '/home/greg/Documents/Projects/Data-Analysis/Real Estate Market Analysis/Zip_Zri_AllHomesPlusMultifamily_Summary.csv'
 rents <- read.csv2(rentPath, header = TRUE, sep=",")
 head(rents, n=5)
-#ZRI's above $4000 are likely errors so drop any locations with ZRI's above $4k
+hist(rents$Zri, xlim = range(1,5000))
 
 #load home values
-valuePath <- '/home/greg/Documents/Projects/Data-Analysis/Real Estate Market Analysis/Zip_Zhvi_Summary_AllHomes.csv'
+valuePath <- "C:/Users/Gregory.Renner/Documents/Personal/Programs/Data-Analysis/Real Estate Market Analysis/Zip_Zhvi_Summary_AllHomes.csv"
+#valuePath <- '/home/greg/Documents/Projects/Data-Analysis/Real Estate Market Analysis/Zip_Zhvi_Summary_AllHomes.csv'
 values <- read.csv2(valuePath, header = TRUE, sep=",")
 head(values, n=5)
+hist(values$Zhvi, nclass = 50, xlim = range(1, 2000000))
 
 #create a single dataset, remove redundent variables before doing so
 rents <- rents[c("RegionName", "SizeRank", "Zri", "MoM", "QoQ", "YoY", "ZriRecordCnt")]
@@ -25,7 +28,7 @@ colnames(homeData)[colnames(homeData)=="RegionName"] <- "ZipCode"
 
 #for a first cut, look at markets with high median rents compared to median values
 homeData$heatIndex <- homeData$Zri/homeData$Zhvi
-hist(homeData$heatIndex)
+hist(homeData$heatIndex, freq = FALSE)
 
 #install zipcode package before continuing
 library(zipcode)
