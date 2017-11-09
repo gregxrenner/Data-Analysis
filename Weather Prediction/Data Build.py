@@ -12,17 +12,23 @@ import pandas as pd
 # os allows us to interact with the operating system
 import os
 
-# test importing a single file
-data = pd.read_csv("/home/greg/Documents/Projects/Data-Analysis/Weather Prediction/data/Aardvark 2011-06-01 - 12-31-2011.csv", header=0)
-data['Location'] = 'Aardvark'
-
-
+# Specify the location of the folder containing all the data files
 directory = "/home/greg/Documents/Projects/Data-Analysis/Weather Prediction/data/"
+
+
+# Format every .csv file and add it to a single master file.
 for root,dirs,files in os.walk(directory):
+    print (str(len(files)) + " files will be formatted and added to the final dataset.")
     for file in files:
-       if file.endswith(".csv"):
-           f=open(file, 'r')
-           # print the file name
-           print (os.path.splitext(filename)[0])
-           f.close()
+        if file.endswith(".csv"):
+            f=open(root+file, 'r')
+            data = pd.read_csv(root + file, header=0)   #read the csv file
+            # print the file name
+            print ("Reading... " + os.path.splitext(file)[0])
+            station = file[:file.find(" ")]
+            # Add the station name to every variable in the dataset, excluding time
+            for i in list(data)[1:]: #skip the first variable, time
+                data = data.rename(columns={i : station + '_' + i})
+            f.close()
+            # append the formatted file to the master
            

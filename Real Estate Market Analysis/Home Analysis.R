@@ -11,7 +11,8 @@
 rentPath <- '/home/greg/Documents/Projects/Data-Analysis/Real Estate Market Analysis/Zip_Zri_AllHomesPlusMultifamily_Summary.csv'
 rents <- read.csv2(rentPath, header = TRUE, sep=",")
 head(rents, n=5)
-#ZRI's above $4000 are likely errors so drop any locations with ZRI's above $4k
+#note that I originally thought ZRI's>5000 were errors but it appears those are accurate. Most of those areas are in LA, 
+  # Silicon Valley and NYC
 
 #load home values
 valuePath <- '/home/greg/Documents/Projects/Data-Analysis/Real Estate Market Analysis/Zip_Zhvi_Summary_AllHomes.csv'
