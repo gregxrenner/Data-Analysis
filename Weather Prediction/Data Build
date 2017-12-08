@@ -1,0 +1,21 @@
+# -*- coding: utf-8 -*-
+"""
+This script builds a single dataset of weather data collected from stations around the Colorado 
+    Springs and Monument areas. This dataset will be used to build ML algorithms to short term predictions
+    of out of limits flying conditions at the USAFA Academy airfield.
+    
+    Written Nov 2017
+"""
+import pandas as pd
+import csv
+
+# Load a CSV file
+def load_csv(filename):
+	dataset = list()
+	with open(filename, 'r') as file:
+		csv_reader = reader(file)
+		for row in csv_reader:
+			if not row:
+				continue
+			dataset.append(row)
+	return dataset
