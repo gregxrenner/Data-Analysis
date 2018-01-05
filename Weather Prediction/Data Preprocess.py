@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-This script builds a single dataset of weather data collected from stations around the Colorado 
-    Springs and Monument areas. This dataset will be used to build ML algorithms for short term predictions
-    of out of limits flying conditions at the USAFA Academy airfield.
+This code is used to clean the weather datasets before they are built into training, validation and test sets. This code
+    is not intended to be run all at once but rather used piece by piece as various problems arise.
     
     Written Nov 2017
 """
@@ -16,9 +15,9 @@ import sys
 # Use numpy to find missing values
 import numpy as np
 
-
+#%%
 # Specify the location of the folder containing all the data files
-directory = "/home/greg/Documents/Projects/Data-Analysis/Weather Prediction/data/"
+directory = "/home/greg/Documents/Projects/Data-Analysis/Weather Prediction/Data/"
 
 # Format every .csv file and add it to a single master file.
 def loadCSVs(directory):
@@ -54,15 +53,16 @@ def loadCSVs(directory):
 
         
 loadCSVs(directory=directory)
-       
+ 
+#%%      
 #check column data types in dataframe with .dtypes
             #rampart 12-01-01 has the first instance of the error
 
 
-error_file = "CommunityCenter 2011-06-01 - 2017-09-25.csv"
+error_file = "Aardvark 2014-01-01 - 2014-12-31.csv"
 
 #import errrors due to dtype. Lets troubleshoot
-data2 = pd.read_csv("/home/greg/Documents/Projects/Data-Analysis/Weather Prediction/data/"+ error_file, header=0,
+data2 = pd.read_csv("/home/greg/Documents/Projects/Data-Analysis/Weather Prediction/Data/"+ error_file, header=0,
                    dtype={"Date_Time": str, "Wind_Direction": int, "Wind_Speed": float, 
                           "Wind_Gust": float, "Air_Temperature": float, "Relative_Humidity": int,
                           "Barometric_Pressure": float, "Precipitation_3Hr": float, 

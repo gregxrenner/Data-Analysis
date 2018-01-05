@@ -11,8 +11,6 @@ This script builds a single dataset of weather data collected from stations arou
 import pandas as pd
 # os allows us to interact with the operating system
 import os
-# sys allows access to system variable attributes
-import sys
 
 # Data is too lage to load into memory so downcast the variables to save space.
 def downcast(data): 
@@ -32,8 +30,9 @@ directory = "/home/greg/Documents/Projects/Data-Analysis/Weather Prediction/Trai
 
 # Format every .csv file and add it to a single master file.
 def loadCSVs(directory):
-    #Initialize a maset file to merge the datasets into
-    master = pd.DataFrame({'Date_Time' : ["2014-01-22 21:10:00"]})
+    #Initialize a master file to merge the datasets into
+    master = pd.DataFrame({'Date_Time' : ["2011-06-06 19:42:00"]})
+    master["Date_Time"] = pd.to_datetime(master["Date_Time"])
     for root,dirs,files in os.walk(directory):
         print (str(len(files)) + " files will be formatted and added to the final dataset.")
         j = 0 # Keep track of how many files have been processed.
@@ -50,7 +49,7 @@ def loadCSVs(directory):
                                           "Precipitation_6Hr": float, "Windchill": float,
                                           "Heat_Stress": float, "fits": float})   #read the csv file
                 # Couldn't figure out how to import as Date_Time format so do the conversion now.
-                #data['Date_Time'] = pd.to_datetime(data['Date_Time'])
+                data['Date_Time'] = pd.to_datetime(data['Date_Time'])
                 # Downcast variables to save memory.
                 data = downcast(data)
                 station = file[:file.find(" ")]
@@ -60,10 +59,15 @@ def loadCSVs(directory):
                 f.close()
                 # Append the formatted file to the master.
                 master = pd.merge(master, data, how='outer', on="Date_Time")
+                print("Merged")
     print ("Load complete.")
     return master
 
         
 master = loadCSVs(directory=directory)
+
+# Use only 2014 data as the training set.
+master = master[((master.Date_Time >= "2014-01-01 00:00:00") & (master.Date_Time < "2015-01-01 00:00:00"))]
+
 
 
