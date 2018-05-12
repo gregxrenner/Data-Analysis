@@ -47,3 +47,7 @@ print(as.Date("2018/01/01") + as.difftime(mod2.predict[2], unit = "days"))
 # Upper prediction bound.
 print(as.Date("2018/01/01") + as.difftime(mod2.predict[3], unit = "days"))
 summary(mod2)
+
+# The prediction interval is very wide which is likely an effect of the model's low R-squaed.
+#   Investigate the relationships between each explanatory variable and the response variable.
+pairs(~closing_day+Pre.Oct+Oct+Nov+Dec+Jan+Feb+Mar+Apr+May, data=mammoth)
