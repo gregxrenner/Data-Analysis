@@ -15,9 +15,9 @@ def isLucky(n):
     first_half_sum = totalDigits(str(n)[:n_length//2])
     second_half_sum = totalDigits(str(n)[n_length//2:])
     if first_half_sum == second_half_sum:
-        return "The ticket is lucky!"
+        return True
     else:
-        return "The ticket is not lucky."
+        return False
 
 def totalDigits(x):
     total = 0
