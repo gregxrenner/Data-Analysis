@@ -1,8 +1,7 @@
 # The purpose of this script is to estimate Mammouth Mountains closing day based on current seasonal snowfall.
 
 # Load the data.
-#dataPath <- "C:/Users/Gregory.Renner/Documents/Personal/Programs/Data-Analysis/Mammoth/Mammoth_Historcial_Data.csv"
-dataPath <- "C:/Users/Gregory/Documents/Personal/git/Data-Analysis/Mammoth/Mammoth_Historcial_Data.csv"
+dataPath <- "C:/Users/Gregory.Renner/Documents/Personal/Programs/Data-Analysis/Mammoth/Mammoth_Historcial_Data.csv"
 mammoth <- read.csv2(dataPath, header = TRUE, sep=",")
 
 
@@ -29,7 +28,7 @@ cat("The estimated closing day is ", predict(mod1, data.frame(Total=c(260)))[1])
 cat("With 90% confidence we estimate the closing day to be between ", mod1.predict[2], " and ", mod1.predict[3])
 summary(mod1)
 
-# Check that error assumptions hold with a QQ plot
+# Check that error normality assumptions hold with a QQ plot
 mod1.stdres <- rstandard(mod1)
 qqnorm(mod1.stdres, 
        ylab = "Standardized Residuals", 
@@ -37,7 +36,7 @@ qqnorm(mod1.stdres,
        main = "The 'steps' can be attributed to closing dates\n occuring at the end or beginning of the month.")
 qqline(mod1.stdres)
 
-# Now predict closing date using each months snowfall as a separate explanatory variable.
+# Now predict closing date using each month's snowfall as a separate explanatory variable.
 mod2 <- lm(closing_day ~ Pre.Oct + Oct + Nov + Dec + Jan + Feb + Mar + Apr + May, data = mammoth)
 mod2.predict.data <- mammoth[49, 4:14]
 mod2.predict <- predict(mod2, mod2.predict.data, interval = "predict", level = 0.9)
@@ -48,6 +47,13 @@ print(as.Date("2018/01/01") + as.difftime(mod2.predict[2], unit = "days"))
 print(as.Date("2018/01/01") + as.difftime(mod2.predict[3], unit = "days"))
 summary(mod2)
 
-# The prediction interval is very wide which is likely an effect of the model's low R-squaed.
+# The prediction interval is very wide which isn't surprising considering the model's low R-squaed.
 #   Investigate the relationships between each explanatory variable and the response variable.
 pairs(~closing_day+Pre.Oct+Oct+Nov+Dec+Jan+Feb+Mar+Apr+May, data=mammoth)
+# Based on the scatterplot matrix it looks like January's snowfall has the strongest relationship with
+#   with closing day. March and February are also important.
+
+# Mammoth closed for the 2017-2018 season on June 17th, the 168th day of the year.This was inside 
+#   our prediction window and only 13 days past our point estimate.
+
+
