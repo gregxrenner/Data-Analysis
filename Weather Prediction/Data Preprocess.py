@@ -17,7 +17,8 @@ import numpy as np
 
 #%%
 # Specify the location of the folder containing all the data files
-directory = "/home/greg/Documents/Projects/Data-Analysis/Weather Prediction/Data/"
+directory = "C:/Users/Gregory.Renner/Documents/Personal/Programs/Data-Analysis/Weather Data/"
+
 
 # Format every .csv file and add it to a single master file.
 def loadCSVs(directory):
@@ -32,12 +33,15 @@ def loadCSVs(directory):
                 f = open(root+file, 'r')
                 # Print the file name
                 print ("Reading file " + str(j) + "... " + os.path.splitext(file)[0])
-                data = pd.read_csv(root + file, header=0,
-                                   dtype={"Date_Time": str, "Wind_Direction": int, "Wind_Speed": float, 
-                                          "Wind_Gust": float, "Air_Temperature": float, "Relative_Humidity": int,
-                                          "Barometric_Pressure": float, "Precipitation_3Hr": float, 
-                                          "Precipitation_6Hr": float, "Windchill": float,
-                                          "Heat_Stress": float, "fits": float})   #read the csv file
+                data = pd.read_csv(root + file, header=0)
+# =============================================================================
+#                 data = pd.read_csv(root + file, header=0,
+#                                    dtype={"Date_Time": str, "Wind_Direction": int, "Wind_Speed": float, 
+#                                           "Wind_Gust": float, "Air_Temperature": float, "Relative_Humidity": int,
+#                                           "Barometric_Pressure": float, "Precipitation_3Hr": float, 
+#                                           "Precipitation_6Hr": float, "Windchill": float,
+#                                           "Heat_Stress": float, "fits": float})   #read the csv file
+# =============================================================================
                 # Couldn't figure out how to import as Date_Time format so do the conversion now.
                 data['Date_Time'] = pd.to_datetime(data['Date_Time'])
                 #data = pd.read_csv(root + file, header=0)
@@ -47,22 +51,22 @@ def loadCSVs(directory):
                     data = data.rename(columns={i : station + '_' + i})
                 f.close()
                 # Append the formatted file to the master.
-                #master = pd.merge(master, data, how='outer', on="Date_Time")
+                master = pd.merge(master, data, how='outer', on="Date_Time")
     print ("Load complete.")
     return master
 
         
-loadCSVs(directory=directory)
+master = loadCSVs(directory=directory)
  
 #%%      
 #check column data types in dataframe with .dtypes
             #rampart 12-01-01 has the first instance of the error
 
 
-error_file = "Aardvark 2014-01-01 - 2014-12-31.csv"
+error_file = "Aardvark 2011-06-01 - 12-31-2011.csv"
 
 #import errrors due to dtype. Lets troubleshoot
-data2 = pd.read_csv("/home/greg/Documents/Projects/Data-Analysis/Weather Prediction/Data/"+ error_file, header=0,
+data2 = pd.read_csv("C:/Users/Gregory.Renner/Documents/Personal/Programs/Data-Analysis/Weather Data/"+ error_file, header=0,
                    dtype={"Date_Time": str, "Wind_Direction": int, "Wind_Speed": float, 
                           "Wind_Gust": float, "Air_Temperature": float, "Relative_Humidity": int,
                           "Barometric_Pressure": float, "Precipitation_3Hr": float, 
@@ -74,6 +78,13 @@ data2 = pd.read_csv("/home/greg/Documents/Projects/Data-Analysis/Weather Predict
 #                            "Precipitation_3Hr": str, "Precipitation_6Hr": str, "Windchill": str,
 #                         "Heat_Stress": str, "fits": str})     
 # =============================================================================
+data2 = pd.read_csv("C:/Users/Gregory.Renner/Documents/Personal/Programs/Data-Analysis/Weather Data/"+ error_file, header=0,
+                   dtype={"Date_Time": str, "Wind_Direction": str, "Wind_Speed": str,"Wind_Gust": str,
+                            "Air_Temperature": str, "Relative_Humidity": str, "Barometric_Pressure": str,
+                            "Precipitation_3Hr": str, "Precipitation_6Hr": str, "Windchill": str,
+                         "Heat_Stress": str, "fits": str}) 
+data2 = pd.read_csv("C:/Users/Gregory.Renner/Documents/Personal/Programs/Data-Analysis/Weather Data/"+ error_file, header=0)
+    
 print(data2.info()) #size of dataframe in Mbytes
 print(data2.dtypes) 
 # Change the varible types from objects to less memory intense dtypes
