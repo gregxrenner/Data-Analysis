@@ -17,12 +17,12 @@ import numpy as np
 
 #%%
 # Specify the location of the folder containing all the data files
-directory = "C:/Users/Gregory.Renner/Documents/Personal/Programs/Data-Analysis/Weather Data/"
+directory = r"C:\Users\Gregory.Renner\Documents\Personal\Programs\Data-Analysis\Weather Data\Aardvark"
 
 
 # Format every .csv file and add it to a single master file.
 def loadCSVs(directory):
-    #Initialize a maset file to merge the datasets into
+    #Initialize a master file to merge the datasets into
     master = pd.DataFrame({'Date_Time' : ["2014-01-22 23:42:00"]})
     for root,dirs,files in os.walk(directory):
         print (str(len(files)) + " files will be formatted and added to the final dataset.")
@@ -66,24 +66,14 @@ master = loadCSVs(directory=directory)
 error_file = "Aardvark 2011-06-01 - 12-31-2011.csv"
 
 #import errrors due to dtype. Lets troubleshoot
-data2 = pd.read_csv("C:/Users/Gregory.Renner/Documents/Personal/Programs/Data-Analysis/Weather Data/"+ error_file, header=0,
+data2 = pd.read_csv("C:/Users/Gregory.Renner/Documents/Personal/Programs/Data-Analysis/Weather Data/Aardvark/"+ error_file, header=0,
                    dtype={"Date_Time": str, "Wind_Direction": int, "Wind_Speed": float, 
                           "Wind_Gust": float, "Air_Temperature": float, "Relative_Humidity": int,
                           "Barometric_Pressure": float, "Precipitation_3Hr": float, 
                           "Precipitation_6Hr": float, "Windchill": float,
                           "Heat_Stress": float, "fits": float})   #read the csv file
-# =============================================================================
-#                     dtype={"Date_Time": str, "Wind_Direction": str, "Wind_Speed": str,"Wind_Gust": str,
-#                            "Air_Temperature": str, "Relative_Humidity": str, "Barometric_Pressure": str,
-#                            "Precipitation_3Hr": str, "Precipitation_6Hr": str, "Windchill": str,
-#                         "Heat_Stress": str, "fits": str})     
-# =============================================================================
-data2 = pd.read_csv("C:/Users/Gregory.Renner/Documents/Personal/Programs/Data-Analysis/Weather Data/"+ error_file, header=0,
-                   dtype={"Date_Time": str, "Wind_Direction": str, "Wind_Speed": str,"Wind_Gust": str,
-                            "Air_Temperature": str, "Relative_Humidity": str, "Barometric_Pressure": str,
-                            "Precipitation_3Hr": str, "Precipitation_6Hr": str, "Windchill": str,
-                         "Heat_Stress": str, "fits": str}) 
-data2 = pd.read_csv("C:/Users/Gregory.Renner/Documents/Personal/Programs/Data-Analysis/Weather Data/"+ error_file, header=0)
+
+data2 = pd.read_csv("C:/Users/Gregory.Renner/Documents/Personal/Programs/Data-Analysis/Weather Data/Aardvark/"+ error_file, header=0)
     
 print(data2.info()) #size of dataframe in Mbytes
 print(data2.dtypes) 
@@ -121,16 +111,42 @@ def mem_usage(pandas_obj):
     usage_mb = usage_b / 1024 ** 2 # convert bytes to megabytes
     return "{:03.2f} MB".format(usage_mb)
 
-def downcast(data): 
-    # Downcast all integer variables
-    data_int = data.select_dtypes(include=['int'])
-    converted_int = data_int.apply(pd.to_numeric,downcast='unsigned')
-    # Downcast all float variables
-    data_float = data.select_dtypes(include=['float'])
-    converted_float = data_float.apply(pd.to_numeric,downcast='float')
-    optimized_data = data.copy()
-    optimized_data[converted_int.columns] = converted_int
-    optimized_data[converted_float.columns] = converted_float
-    return optimized_data
 
 #%%
+directory = r"C:\Users\Gregory.Renner\Documents\Personal\Programs\Data-Analysis\Weather Data\Aardvark"
+
+def assembleStation(directory):
+    # Some weather stations have data split across multiple files. Append those files so that each
+    #   weather station has a single csv.
+    #Initialize a master file to merge the datasets into
+    master = pd.DataFrame({'Date_Time' : ["2011-06-06 19:42:00"]})
+    for root,dirs,files in os.walk(directory):
+        for file in files:
+            if file.endswith(".csv"):
+                print(file)
+                data = pd.read_csv(root + '\\' + file, header=0)
+                master = master.append(data)
+    master = master[1:]
+    return master
+
+master = assembleStation(directory=directory)
+
+# Conver the data types.
+master['Date_Time'] = pd.to_datetime(master['Date_Time'])
+master['Air_Temperature'] = pd.to_numeric(master['Air_Temperature'], errors='coerce', downcast='float')
+master['Barometric_Pressure'] = pd.to_numeric(master['Barometric_Pressure'], errors='coerce', downcast='float')
+master['Heat_Stress'] = pd.to_numeric(master['Heat_Stress'], errors='coerce', downcast='float')
+master['Precipitation_3Hr'] = pd.to_numeric(master['Precipitation_3Hr'], errors='coerce', downcast='float')
+master['Precipitation_6Hr'] = pd.to_numeric(master['Precipitation_6Hr'], errors='coerce', downcast='float')
+master['Relative_Humidity'] = pd.to_numeric(master['Relative_Humidity'], errors='coerce', downcast='float')
+master['Wind_Direction'] = pd.to_numeric(master['Wind_Gust'], errors='coerce', downcast='float')
+master['Wind_Gust'] = pd.to_numeric(master['Wind_Gust'], errors='coerce', downcast='float')
+master['Wind_Speed'] = pd.to_numeric(master['Wind_Speed'], errors='coerce', downcast='float')
+master['Windchill'] = pd.to_numeric(master['Windchill'], errors='coerce', downcast='float')
+master['fits'] = pd.to_numeric(master['fits'], errors='coerce', downcast='float')
+
+# Export
+out_dir = r"C:\Users\Gregory.Renner\Documents\Personal\Programs\Data-Analysis\Weather Data Clean"
+master.to_csv(path_or_buf=out_dir + r'\Aardvark.csv', index = False)
+
+
